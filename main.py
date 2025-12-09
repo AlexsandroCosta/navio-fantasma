@@ -24,10 +24,10 @@ GAME_STATE = 'menu'
 GAME_MAP = [
     "p.............",
     ".###.####..###",
-    ".|...|..|.....",
-    ".|...|..|....t",
-    ".|.m....|.....",
-    ".|t..|......m.",
+    ".|......|.....",
+    ".|......|....t",
+    ".|.m..........",
+    ".|t.........m.",
     ".#####..#.###.",
     "...m..........",
     ".##..##t.##...",
@@ -115,7 +115,7 @@ def update():
             if monster.right > WIDTH or monster.left < 0:
                 monster.vx = -monster.vx  # Inverter direção ao sair da tela
         
-            if monster.collidelist(walls) != -1:
+            if monster.collidelist(walls) != -1 or monster.collidelist(treasures) != -1:
                 monster.vx = -monster.vx  # Inverter direção ao colidir com parede
 
             monster.frame += 0.1
