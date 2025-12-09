@@ -44,6 +44,7 @@ sound_button = Actor('sound_on', topright=(WIDTH-740, 10))
 
 walls = []
 monsters = []
+monter_frames = ['monster/monster1', 'monster/monster2', 'monster/monster3', 'monster/monster4', 'monster/monster5', 'monster/monster6']
 treasures = []
 
 # Música de fundo
@@ -66,8 +67,9 @@ def setup_game():
                 wall.angle = 90
                 wall.draw()
             elif tile == 'm':
-                monster = Actor('monster', center=(pos_x, pos_y))
+                monster = Actor('monster/monster', center=(pos_x, pos_y))
                 monster.vx = 1
+                monster.frame = 0
                 monsters.append(monster)
                 monster.draw()
             elif tile == 't':
@@ -115,7 +117,16 @@ def update():
         
             if monster.collidelist(walls) != -1:
                 monster.vx = -monster.vx  # Inverter direção ao colidir com parede
-                monster.x += monster.vx  # Mover o monstro após inverter direção
+
+            monster.frame += 0.1
+
+            if monster.frame >= len(monter_frames):
+                monster.frame = 0
+            
+            if monster.vx > 0:
+                monster.image = monter_frames[int(monster.frame)]
+            else:
+                monster.image = monter_frames[int(monster.frame)] + 'e'
 
 def on_mouse_down(pos):
     global SOUND_ON, GAME_STATE
