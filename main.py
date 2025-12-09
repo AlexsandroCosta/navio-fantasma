@@ -25,12 +25,12 @@ GAME_MAP = [
     "p.............",
     ".###.####..###",
     ".|...|..|.....",
-    ".|...|..|.....",
-    ".|.m.|..|.....",
-    ".|t..|..|.....",
+    ".|...|..|....t",
+    ".|.m....|.....",
+    ".|t..|......m.",
     ".#####..#.###.",
-    "..............",
-    ".##..##..##...",
+    "...m..........",
+    ".##..##t.##...",
     ".............."
 ]
 
@@ -42,33 +42,53 @@ start_button = Actor('start_button', center=(WIDTH/2, 400))
 exit_button = Actor('exit_button', center=(WIDTH/2, 470))
 sound_button = Actor('sound_on', topright=(WIDTH-740, 10))
 
-bone = Actor('bone')
+walls = []
+monsters = []
+treasures = []
 
 # Música de fundo
 sounds.crying_out_in_the_darkness.play(-1)
 
-def draw_game():
-    game_background.draw()
-
+def setup_game():
     for y, row in enumerate(GAME_MAP):
         for x, tile in enumerate(row):
             pos_x = MARGIN_X + x * TILE_SIZE + TILE_SIZE // 2
             pos_y = MARGIN_Y + y * TILE_SIZE + TILE_SIZE // 2
 
             if tile == '#':
-                bone.center = (pos_x, pos_y)
-                bone.angle = 0
-                bone.draw()
+                wall = Actor('bone', center=(pos_x, pos_y))
+                walls.append(wall)
+                wall.angle = 0
+                wall.draw()
             elif tile == '|':
-                bone.center = (pos_x, pos_y)
-                bone.angle = 90
-                bone.draw()
+                wall = Actor('bone', center=(pos_x, pos_y))
+                walls.append(wall)
+                wall.angle = 90
+                wall.draw()
+            elif tile == 'm':
+                monster = Actor('monster', center=(pos_x, pos_y))
+                monster.vx = 1
+                monsters.append(monster)
+                monster.draw()
+            elif tile == 't':
+                treasure = Actor('treasure', center=(pos_x, pos_y))
+                treasures.append(treasure)
+                treasure.draw()
             # elif tile == 'p':
             #     Actor('pirate', center=(pos_x, pos_y)).draw()
-            # elif tile == 'm':
-            #     Actor('monster1', center=(pos_x, pos_y)).draw()
-            # elif tile == 't':
-            #     Actor('treasure', center=(pos_x, pos_y)).draw()
+
+def draw_game():
+    game_background.draw()
+    
+    for wall in walls:
+        wall.draw()
+
+    for monster in monsters:
+        monster.draw()
+
+    for treasure in treasures:
+        treasure.draw()
+
 
 def draw_menu():
     menu_background.draw()
@@ -84,11 +104,24 @@ def draw():
         draw_menu()
     elif GAME_STATE == 'game':
         draw_game()
-    
+
+def update():
+    if GAME_STATE == 'game':
+        for monster in monsters:
+            monster.x += monster.vx
+
+            if monster.right > WIDTH or monster.left < 0:
+                monster.vx = -monster.vx  # Inverter direção ao sair da tela
+        
+            if monster.collidelist(walls) != -1:
+                monster.vx = -monster.vx  # Inverter direção ao colidir com parede
+                monster.x += monster.vx  # Mover o monstro após inverter direção
+
 def on_mouse_down(pos):
     global SOUND_ON, GAME_STATE
 
     if start_button.collidepoint(pos):
+        setup_game()
         GAME_STATE = 'game'
 
     elif exit_button.collidepoint(pos):
