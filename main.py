@@ -49,7 +49,7 @@ monter_frames = ['monster/monster1', 'monster/monster2', 'monster/monster3', 'mo
 treasures = []
 
 pirate_frames = {
-    'idle_down': 'pirate/pirate-front',
+    'idle_down': ['pirate/pirate-front', 'pirate/pirate-front3', 'pirate/pirate-front4'],
     'idle_up':   'pirate/pirate-back',
     'up': ['pirate/pirate-back1', 'pirate/pirate-back2'],
     'down': ['pirate/pirate-front1', 'pirate/pirate-front2'],
@@ -84,9 +84,8 @@ def setup_game():
                 treasures.append(treasure)
             elif tile == 'p':
                 pirate.center = (pos_x, pos_y)
-                pirate.direction = 'down'
+                pirate.direction = 'idle_down'
                 pirate.frame = 0
-                pirate.image = pirate_frames['idle_down']
 
 def draw_game():
     game_background.draw()
@@ -119,6 +118,8 @@ def draw():
 
 def update():
     if GAME_STATE == 'game':
+
+        # Atualiza a posição dos monstros e suas animações
         for monster in monsters:
             monster.x += monster.vx
 
@@ -134,6 +135,15 @@ def update():
                 monster.image = monter_frames[int(monster.frame)]
             else:
                 monster.image = monter_frames[int(monster.frame)] + 'e'
+
+        # Animação do pirata quando parado
+        if 'idle' in pirate.direction:
+            current_anim = pirate_frames[pirate.direction]
+            
+            if isinstance(current_anim, list):
+                pirate.frame += 0.01 
+                frame_index = int(pirate.frame) % len(current_anim)
+                pirate.image = current_anim[frame_index]
 
 def on_mouse_down(pos):
     global SOUND_ON, GAME_STATE
@@ -158,7 +168,7 @@ def on_mouse_down(pos):
 def animate_pirate():
     current_anim = pirate_frames[pirate.direction]
 
-    # Verifica se é uma LISTA (animação de andar)
+    # Verifica se é uma LISTA (animação de mevimento)
     if isinstance(current_anim, list):
         pirate.frame += 1
         pirate.frame = pirate.frame % len(current_anim)
