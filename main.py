@@ -1,5 +1,4 @@
 import pgzero
-from pgzero.rect import Rect
 
 # Configurações da janela
 WIDTH   = 800
