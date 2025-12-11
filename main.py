@@ -39,6 +39,7 @@ game_background = Actor('game_background', center=(WIDTH/2, HEIGHT/2))
 title = Actor('title_image', center=(WIDTH/2, 150))
 start_button = Actor('start_button', center=(WIDTH/2, 400))
 exit_button = Actor('exit_button', center=(WIDTH/2, 470))
+instructions = Actor('instructions', center=(150,  450))
 sound_button = Actor('sound_on', topright=(WIDTH-740, 10))
 pirate = Actor('pirate/pirate-front')
 
@@ -106,6 +107,7 @@ def draw_menu():
     start_button.draw()
     exit_button.draw()
     sound_button.draw()
+    instructions.draw()
 
 def draw():
     screen.clear()
